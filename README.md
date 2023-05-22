@@ -25,7 +25,7 @@ When stack creation has finished, [open Cloud9](https://console.aws.amazon.com/c
 ```sh
 aws configure
 git clone https://github.com/Prem-Kumar16/demo-soafee-aws-iotfleetwise.git
-cd ~/environment/demo-soafee-aws-iotfleetwise
+cd demo-soafee-aws-iotfleetwise/
 ./scripts/deploy-cloud.sh
 ```
 
