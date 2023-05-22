@@ -1,41 +1,39 @@
 #!/bin/bash
 set -euo pipefail
 
-# Wait for any existing package install to finish
-i=0
-while true; do
-    if sudo fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; then
-        i=0
-    else
-        i=`expr $i + 1`
-        if expr $i \>= 10 > /dev/null; then
-            break
-        fi
-    fi
-    sleep 1
-done
 
-sudo apt-get -y update
-sudo apt-get -y install jq gettext bash-completion moreutils linux-modules-extra-$(uname -r) \
-    python3.8 python3.8-dev python3.8-distutils python3.8-venv
 export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
-export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
-echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a /home/ubuntu/.bash_profile
-echo "export AWS_REGION=${AWS_REGION}" | tee -a /home/ubuntu/.bash_profile
+export AWS_REGION=eu-central-1
+echo "export ACCOUNT_ID=${ACCOUNT_ID}"
+echo "export AWS_REGION=${AWS_REGION}"
 aws configure set default.region ${AWS_REGION}
 aws configure set default.account ${ACCOUNT_ID}
 git config --global core.autocrlf false
-cdk bootstrap aws://${ACCOUNT_ID}/${AWS_REGION}
+aws cloudformation create-stack \
+  --stack-name CDKToolkit \
+  --template-url https://2054864-template-for-iotfw.s3.eu-central-1.amazonaws.com/bootstrap-template.yml \
+  --capabilities CAPABILITY_NAMED_IAM
+
 
 mkdir -p .tmp
 pushd cloud
-python3.8 -m venv venv
+python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+pip install --upgrade pip
+pip install nodeenv
+nodeenv -p
+npm install -g npm@latest
+sudo npm install aws-cdk -g
 cdk deploy --require-approval never --outputs-file ../.tmp/cdk-outputs.json
 popd
-cat .tmp/cdk-outputs.json | jq -r '."demo-soafee-aws-iotfleetwise".privateKey' > .tmp/private-key.key 
-cat .tmp/cdk-outputs.json | jq -r '."demo-soafee-aws-iotfleetwise".certificate' > .tmp/certificate.pem
-cat .tmp/cdk-outputs.json | jq -r '."demo-soafee-aws-iotfleetwise".endpointAddress'  > .tmp/endpoint_address.txt
-cat .tmp/cdk-outputs.json | jq -r '."demo-soafee-aws-iotfleetwise".vehicleCanInterface'  > .tmp/vehicle_can_interface.txt
-cat .tmp/cdk-outputs.json | jq -r '."demo-soafee-aws-iotfleetwise".vehicleName'  > .tmp/vehicle_name.txt
+
+aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='certificate'].OutputValue" --output text > .tmp/certificate.pem
+
+aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='endpointAddress'].OutputValue" --output text > .tmp/endpoint_address.txt
+
+aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='privateKey'].OutputValue" --output text > .tmp/private-key.key
+
+aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='vehicleName'].OutputValue" --output text > .tmp/vehicle_name.txt
+
+aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='vehicleCanInterface'].OutputValue" --output text > .tmp/vehicle_can_interface.txt
