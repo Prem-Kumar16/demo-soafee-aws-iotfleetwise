@@ -24,7 +24,6 @@ When stack creation has finished, [open Cloud9](https://console.aws.amazon.com/c
 
 ```sh
 cd ~/environment/demo-soafee-aws-iotfleetwise
-./scripts/resize-c9.sh 20
 ./scripts/deploy-cloud.sh
 ```
 
