@@ -14,6 +14,10 @@ aws cloudformation create-stack \
   --template-url https://2054864-template-for-iotfw.s3.eu-central-1.amazonaws.com/bootstrap-template.yml \
   --capabilities CAPABILITY_NAMED_IAM
 
+echo "The CDKToolkit stack needs some time to create, so go grab some coffee ( or whatever you like, no offence )"
+echo "...."
+sleep 240
+echo "Proceeding to next step -->"
 
 mkdir -p .tmp
 pushd cloud
