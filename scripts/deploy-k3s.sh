@@ -63,7 +63,7 @@ spec:
       subPath: certificate.pem
       readOnly: true
   - name: vsim
-    image: docker.io/library/vsim:latest
+    image: docker.io/library/783584839454.dkr.ecr.sa-east-1.amazonaws.com/soafee-demo-repo-2054864:latest
     imagePullPolicy: Never
     env:
     - name: CAN_IF
