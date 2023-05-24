@@ -31,6 +31,8 @@ The output will be the key ID. Note down it
 
 Run the below command to save .pem file in the cloudshell directory
 
+Change the keyid paramater to the output of previous command
+
 ```sh
 aws ssm get-parameter --name /ec2/keypair/<keyid here> --with-decryption --query Parameter.Value --output text > keypair-for-ewaol.pem
 ```
@@ -82,7 +84,7 @@ Deploy the kubernetes manifest to k3s
 ```
 The script shows you the AWS IoT FleetWise Edge log. If you stop the script with CTRL+C, this will terminate the containers. As such, if you want to run other commands without stopping the containers, open another terminal.
 
-Now you can connect to the Vehicle Simulator Webapp by opening the http://<your public ip>:8080
+Now you can connect to the Vehicle Simulator Webapp by opening the "http://<your public ip>:8080"
 
 You can try changing things such as opening/closing the vehicle doors and observe how the data signals values are fed into our Amazon Timestream table. You can either use [Amazon Timestream console](https://console.aws.amazon.com/timestream/home?#query-editor:) to run the query or you can paste the command below in one of the terminals.
 
