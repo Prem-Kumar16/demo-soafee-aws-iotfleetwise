@@ -33,12 +33,32 @@ cdk deploy --require-approval never --outputs-file ../.tmp/cdk-outputs.json
 deactivate
 popd
 
+echo "Writing certificate.pem file to .tmp directory..."
+
 aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='certificate'].OutputValue" --output text > .tmp/certificate.pem
+
+echo "Finished writing"
+
+echo "Writing endpoint_address.txt file to .tmp directory..."
 
 aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='endpointAddress'].OutputValue" --output text > .tmp/endpoint_address.txt
 
+echo "Finished writing"
+
+echo "Writing private_key file to .tmp directory..."
+
 aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='privateKey'].OutputValue" --output text > .tmp/private-key.key
+
+echo "Finished writing"
+
+echo "Writing vehicle_name.txt file to .tmp directory..."
 
 aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='vehicleName'].OutputValue" --output text > .tmp/vehicle_name.txt
 
+echo "Finished writing"
+
+echo "Writing vehicle_can_interface.txt file to .tmp directory..."
+
 aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[?StackName=='demo-soafee-aws-iotfleetwise'][].Outputs[?OutputKey=='vehicleCanInterface'].OutputValue" --output text > .tmp/vehicle_can_interface.txt
+
+echo "Finished writing"
