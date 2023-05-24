@@ -67,7 +67,7 @@ sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
 Build the Vehicle Simulator container image that will feeding signals on the CAN Bus Data where the AWS IoT FleetWise Edge is listening on
 
 ```sh
-sudo ./scripts/build-vsim.sh
+sudo ./scripts/pull-vsim.sh
 ```
 
 Load certificate and private key for the vehicle into k3s secrets. These have been created by ```./scripts/deploy-cloud.sh``` above
