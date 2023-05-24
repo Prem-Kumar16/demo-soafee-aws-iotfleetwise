@@ -4,22 +4,29 @@ The repository contains the instructions and code that allows you to reproduce t
 
 The demo will walk you through the exercise of running on [EWAOL](https://github.com/aws4embeddedlinux/meta-aws-ewaol) the [AWS IoT FleeWise](https://aws.amazon.com/iot-fleetwise/) Edge. The [AWS IoT FleeWise Edge](https://github.com/aws/aws-iot-fleetwise-edge) will run in a [container](https://gallery.ecr.aws/aws-iot-fleetwise-edge/aws-iot-fleetwise-edge) and the orchestration will be done with [k3s](https://k3s.io/). We can use the exact same container image both in the cloud and on a physical target, as long as they are based on an ARM v8 core.
 
+This demo is solely implemented on the custom built yocto linux AMI that is specialized for SDV ( Software Defined Vehicle ) purposes
 
 ## Getting started
 
 ## THIS DEMO WILL ONLY WORK ON FRANKFURT (eu-central-1) region 
 
-Deploy Cloud 9 in one of the supported regions
+Deploy EC2 in Frankfurt region
 
-[![Launch](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/us-east-1.svg)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=demo-soafee-aws-iotfleetwise-cloud9&templateURL=https://demo-soafee-aws-iot-fleetwise-eu-central-1.s3.eu-central-1.amazonaws.com/cloud9-env.template.json)
-
-[![Launch](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/eu-central-1.svg)](https://eu-central-1.console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/create/review?stackName=demo-soafee-aws-iotfleetwise-cloud9&templateURL=https://demo-soafee-aws-iot-fleetwise-eu-central-1.s3.eu-central-1.amazonaws.com/cloud9-env.template.json)
+[![Launch](https://samdengler.github.io/cloudformation-launch-stack-button-svg/images/eu-central-1.svg)](https://eu-central-1.console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.eu-central-1.amazonaws.com%2Fcf-templates-fui01m96flo3-eu-central-1%2F2023-05-24T071122.004Z5n6-ec2-template.yml&stackName=ewaol-ec2-creation)
 
 Acknowledge the creation of the stack and press the button **Create stack** on the bottom right. 
 
-![Create Stack](docs/createstack.png)
+The ```ewaol-ec2-creation``` CloudFormation stack will take about **2 minutes** to be created.
 
-The ```demo-soafee-aws-iotfleetwise-cloud9``` CloudFormation stack will take about **3 minutes** to be created.
+### Locally downloading the Private key file
+
+Follow the steps below to download the private .pem key file to SSH into the instance
+
+Open cloudshell and run the following command
+
+```sh 
+aws ec2 describe-key-pairs --filters Name=key-name,Values=keypair-for-ewaol --query KeyPairs[*].KeyPairId --output text
+```
 
 When stack creation has finished, [open Cloud9](https://console.aws.amazon.com/cloud9/home#) and, in a terminal, run the following script to create the cdk stack that will deploy all the cloud resources as shown on the architecture above
 
