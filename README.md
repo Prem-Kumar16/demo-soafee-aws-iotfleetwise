@@ -27,8 +27,25 @@ Open cloudshell and run the following command
 ```sh 
 aws ec2 describe-key-pairs --filters Name=key-name,Values=keypair-for-ewaol --query KeyPairs[*].KeyPairId --output text
 ```
+The output will be the key ID. Note down it
+
+Run the below command to save .pem file in the cloudshell directory
+
+```sh
+aws ssm get-parameter --name /ec2/keypair/<keyid here> --with-decryption --query Parameter.Value --output text > keypair-for-ewaol.pem
+```
+
+Go to actions -> download file and paste this path "/home/cloudshell-user/keypair-for-ewaol.pem" inside the path field to save .pem key file locally
+
+If you go to ec2 instances page, you will find a newly created instance named "EWAOL-Instance". SSH into the instance using the key file  that you have previously downloaded
 
 When stack creation has finished, [open Cloud9](https://console.aws.amazon.com/cloud9/home#) and, in a terminal, run the following script to create the cdk stack that will deploy all the cloud resources as shown on the architecture above
+
+#### Important note, while SSH change the user name from root to ewaol i.e., instead of root@ip.eu-central-1.compute.amazonaws.com, you should use ewaol@ip.eu-central-1.compute.amazonaws.com
+
+After connected to the instance via SSH, run the below command
+
+Note : Give the access & secret access key to the instance via "aws configure" command & the default region name must be eu-central-1
 
 ```sh
 aws configure
@@ -41,12 +58,7 @@ The above commands will take about **10 minutes** to complete. While you wait we
 
 ### Get AWS FleetWise Edge running on the Build Host
 
-This is the quickest option to see AWS IoT FleetWise running without having to build the EWAOL AMI, as detailed in the next paragraph.
-
-We will be using the same orchestrator (k3s) used in EWAOL, so let's get started by installing it
-
 ```sh
-curl -sfL https://get.k3s.io | sh -
 sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
 ```
 
@@ -70,11 +82,9 @@ Deploy the kubernetes manifest to k3s
 ```
 The script shows you the AWS IoT FleetWise Edge log. If you stop the script with CTRL+C, this will terminate the containers. As such, if you want to run other commands without stopping the containers, open another terminal.
 
-Now you can connect to the Vehicle Simulator Webapp opening the Cloud9 preview
+Now you can connect to the Vehicle Simulator Webapp by opening the http://<your public ip>:8080
 
-![Preview menu](docs/preview%20menu.png)
-
-You can try changing things such as opening/closing the vehicle doors and observe how the data signals values are fed into our Amazon Timestream table. You can either use [Amazon Timestream console](https://console.aws.amazon.com/timestream/home?#query-editor:) to run the query or you can paste the command below in one of the Cloud9 terminals.
+You can try changing things such as opening/closing the vehicle doors and observe how the data signals values are fed into our Amazon Timestream table. You can either use [Amazon Timestream console](https://console.aws.amazon.com/timestream/home?#query-editor:) to run the query or you can paste the command below in one of the terminals.
 
 ```sh
 aws timestream-query query --query-string \
@@ -102,7 +112,7 @@ Please note that DoorsState is encoded on 5 bits and the value associated with e
 
 ### Cleanup
 
-From [CloudFormation](https://console.aws.amazon.com/cloudformation/home) just delete `demo-soafee-aws-iotfleetwise` and `demo-soafee-aws-iotfleetwise-cloud9` stacks.
+From [CloudFormation](https://console.aws.amazon.com/cloudformation/home) just delete `demo-soafee-aws-iotfleetwise` and `ewaol-ec2-creation` stacks.
 
 ---
 
