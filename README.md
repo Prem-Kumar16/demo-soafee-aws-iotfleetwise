@@ -39,7 +39,7 @@ Go to actions -> download file and paste this path "/home/cloudshell-user/keypai
 
 If you go to ec2 instances page, you will find a newly created instance named "EWAOL-Instance". SSH into the instance using the key file  that you have previously downloaded
 
-When stack creation has finished, [open Cloud9](https://console.aws.amazon.com/cloud9/home#) and, in a terminal, run the following script to create the cdk stack that will deploy all the cloud resources as shown on the architecture above
+Run the following script to create the cdk stack that will deploy all the cloud resources as shown on the architecture above
 
 #### Important note, while SSH change the user name from root to ewaol i.e., instead of root@ip.eu-central-1.compute.amazonaws.com, you should use ewaol@ip.eu-central-1.compute.amazonaws.com
 
